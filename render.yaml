@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: kreyol-translator
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      # Set the actual key value in the Render dashboard (kept secret).
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      # Optional: strongest idiom handling. Remove to use the cheaper default.
+      # - key: CLAUDE_MODEL
+      #   value: claude-sonnet-5
