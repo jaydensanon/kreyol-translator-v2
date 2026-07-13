@@ -24,6 +24,11 @@ app.post('/api/translate', async (req, res) => {
     if (text.length > MAX_CHARS) {
       return res.status(400).json({ error: `Text is too long (max ${MAX_CHARS} characters).` });
     }
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.status(500).json({
+        error: 'Server has no API key configured. Copy .env.example to .env, add your ANTHROPIC_API_KEY, and restart the server.',
+      });
+    }
 
     const toEnglish = direction !== 'en2ht';
     const source = toEnglish ? 'Haitian Kreyòl' : 'English';
@@ -54,7 +59,7 @@ app.post('/api/translate', async (req, res) => {
     const status = err?.status === 401 ? 401 : 500;
     const msg =
       status === 401
-        ? 'Invalid or missing API key. Check your .env file.'
+        ? 'API key was rejected. Check that ANTHROPIC_API_KEY in .env is correct.'
         : 'Translation failed. Please try again.';
     res.status(status).json({ error: msg });
   }

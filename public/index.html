@@ -200,6 +200,7 @@
         srcLabel.textContent = en; tgtLabel.textContent = ht;
         input.placeholder = 'Type your text here…';
       }
+      renderExamples();
     });
 
     async function translate() {
@@ -234,22 +235,27 @@
       }
     }
 
-    // Clickable example phrases (Haitian Kreyòl). Clicking fills + translates.
-    const EXAMPLES = ['Bonjou', 'Mèsi anpil', 'Kijan ou ye?', 'Mwen grangou', 'Kote twalèt la ye?', 'N a wè pita'];
+    // Clickable example phrases. Shown set matches the current translation direction.
+    const EXAMPLES_HT = ['Bonjou', 'Mèsi anpil', 'Kijan ou ye?', 'Mwen grangou', 'Kote twalèt la ye?', 'N a wè pita'];
+    const EXAMPLES_EN = ['Hello', 'Thank you very much', 'How are you?', 'I am hungry', 'Where is the bathroom?', 'See you later'];
     const examplesEl = document.getElementById('examples');
-    EXAMPLES.forEach((phrase) => {
-      const chip = document.createElement('button');
-      chip.className = 'chip';
-      chip.textContent = phrase;
-      chip.addEventListener('click', () => {
-        // Examples are Kreyòl, so make sure we translate to English.
-        if (direction !== 'ht2en') swap.click();
-        input.value = phrase;
-        count.textContent = phrase.length;
-        translate();
+
+    function renderExamples() {
+      examplesEl.innerHTML = '';
+      const list = direction === 'ht2en' ? EXAMPLES_HT : EXAMPLES_EN;
+      list.forEach((phrase) => {
+        const chip = document.createElement('button');
+        chip.className = 'chip';
+        chip.textContent = phrase;
+        chip.addEventListener('click', () => {
+          input.value = phrase;
+          count.textContent = phrase.length;
+          translate();
+        });
+        examplesEl.appendChild(chip);
       });
-      examplesEl.appendChild(chip);
-    });
+    }
+    renderExamples();
 
     btn.addEventListener('click', translate);
     input.addEventListener('keydown', (e) => {
